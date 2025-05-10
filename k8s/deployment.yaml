@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: springapp
-          image: kskml/springboot-app:bf7f4b2f49e805bd6cc988f8f65a49ecc2e894df
+          image: kskml/springboot-app:9cbafa1a4cfced629ecda191f9626c736c974f1d
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
