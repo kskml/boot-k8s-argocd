@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-app
+spec:
+  selector:
+    matchLabels:
+      app: springboot-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+    spec:
+      containers:
+        - name: springapp
+          image: kskml/springboot-app
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
