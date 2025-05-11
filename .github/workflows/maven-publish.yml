@@ -31,6 +31,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Run Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --source=. --verbose --redact
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
