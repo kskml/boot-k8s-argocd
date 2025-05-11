@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main  # Change this to your default branch
-env:
-      IMAGE_TAG: ${{ needs.set-tag.outputs.image-tag }}
 
 jobs:
   set-tag:
