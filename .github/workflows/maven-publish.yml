@@ -5,11 +5,23 @@ on:
     branches:
       - main  # Change this to your default branch
 env:
-  SHORT_SHA: ${{ github.sha }}
+      IMAGE_TAG: ${{ needs.set-tag.outputs.image-tag }}
+
 jobs:
+  set-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.timestamp.outputs.tag }}
+    steps:
+      - name: Generate timestamp tag
+        id: timestamp
+        run: echo "tag=$(date +%Y%m%d-%H%M%S)" >> "$GITHUB_OUTPUT"
+        
   build-and-push:
     runs-on: ubuntu-latest
-
+    needs: set-tag
+    env:
+      IMAGE_TAG: ${{ needs.set-tag.outputs.image-tag }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -36,10 +48,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/springboot-app:${{ env.SHORT_SHA }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/springboot-app:$IMAGE_TAG
   update_k8s_manifests:
     runs-on: ubuntu-latest
     needs: build-and-push
+    env:
+      IMAGE_TAG: ${{ needs.set-tag.outputs.image-tag }}
     steps:
       - name: Checkout GitOps repository
         uses: actions/checkout@v2
@@ -48,7 +62,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
       - name: Update Deployment.yaml with new image tag
         run: |
-          sed -i "s|image: kskml/springboot-app:.*|image: kskml/springboot-app:${{ env.SHORT_SHA }}|" k8s/deployment.yaml
+          sed -i "s|image: kskml/springboot-app:.*|image: kskml/springboot-app:$IMAGE_TAG|" k8s/deployment.yaml
 
       - name: Commit and push changes
         run: |
