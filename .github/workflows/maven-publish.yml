@@ -51,7 +51,7 @@ jobs:
 
       - name: Update Deployment.yaml with new image tag
         run: |
-          sed -i "s|image: kskml/springboot-app:.*|image: kskml/springboot-app:${{ github.sha }}|" k8s/deployment.yaml
+          sed -i "s|image: kskml/springboot-app:.*|image: kskml/springboot-app:${{ env.SHORT_SHA }}|" k8s/deployment.yaml
 
       - name: Commit and push changes
         run: |
