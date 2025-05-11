@@ -46,9 +46,6 @@ jobs:
         with:
           repository: kskml/boot-k8s-argocd
           token: ${{ secrets.GH_TOKEN }}
-      - name: Set short SHA
-        id: vars
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Update Deployment.yaml with new image tag
         run: |
           sed -i "s|image: kskml/springboot-app:.*|image: kskml/springboot-app:${{ env.SHORT_SHA }}|" k8s/deployment.yaml
